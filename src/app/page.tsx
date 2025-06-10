@@ -1,13 +1,14 @@
 // src/app/page.tsx
-'use client' // Manteremos 'use client' por enquanto para o botão inteligente
+'use client'
 
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 
-// Um pequeno componente para o botão de login/dashboard
+// DEFINIÇÃO DO COMPONENTE QUE ESTAVA FALTANDO
 const ActionButton = () => {
   const { status } = useSession();
 
+  // Se o usuário já estiver logado, o botão leva para o Dashboard
   if (status === 'authenticated') {
     return (
       <Link href="/dashboard" className="rounded-md bg-brand-accent px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-brand-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 transition-colors">
@@ -16,6 +17,7 @@ const ActionButton = () => {
     );
   }
 
+  // Se não, o botão padrão leva para a página de Login
   return (
     <Link href="/login" className="rounded-md bg-brand-accent px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-brand-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 transition-colors">
       Acessar o Sistema
@@ -24,9 +26,10 @@ const ActionButton = () => {
 };
 
 
+// O restante da sua página, agora com o layout corrigido
 export default function HomePage() {
   return (
-    <div className="bg-brand-background">
+    <div className="flex min-h-screen flex-col bg-brand-background">
       {/* Cabeçalho */}
       <header className="absolute inset-x-0 top-0 z-50">
         <nav className="flex items-center justify-between p-6 lg:px-8" aria-label="Global">
@@ -42,7 +45,7 @@ export default function HomePage() {
       </header>
 
       {/* Seção Principal (Hero) */}
-      <main className="relative isolate px-6 pt-14 lg:px-8">
+      <main className="relative isolate flex-grow px-6 pt-14 lg:px-8">
         <div className="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56">
           <div className="text-center">
             <h1 className="text-4xl font-bold tracking-tight text-brand-primary sm:text-6xl">
@@ -61,8 +64,8 @@ export default function HomePage() {
         </div>
       </main>
 
-      {/* Rodapé (Exemplo) */}
-      <footer className="text-center p-4 mt-10 border-t">
+      {/* Rodapé */}
+      <footer className="text-center p-4 border-t">
         <p className="text-center text-gray-500 text-xs">
           &copy;{new Date().getFullYear()} Clínica-App. Todos os direitos reservados.
         </p>
