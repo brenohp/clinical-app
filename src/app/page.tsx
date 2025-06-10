@@ -1,86 +1,72 @@
 // src/app/page.tsx
-'use client'
+'use client' // Manteremos 'use client' por enquanto para o botão inteligente
 
-import { useSession, signIn, signOut } from 'next-auth/react'
-import { useState } from 'react'
+import Link from 'next/link';
+import { useSession } from 'next-auth/react';
 
-export default function Home() {
-  const { data: session, status } = useSession()
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+// Um pequeno componente para o botão de login/dashboard
+const ActionButton = () => {
+  const { status } = useSession();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    try {
-      const result = await signIn('credentials', {
-        email,
-        password,
-        redirect: false, // Evita redirecionamento automático
-      })
-
-      if (result?.error) {
-        console.error(result.error)
-        alert('Falha no login: verifique suas credenciais.')
-      } else {
-        // O login foi bem-sucedido, a sessão será atualizada automaticamente
-        alert('Login realizado com sucesso!')
-      }
-    } catch (error) {
-      console.error('Ocorreu um erro inesperado:', error)
-      alert('Ocorreu um erro inesperado.')
-    }
-  }
-
-  // Se a sessão estiver carregando, mostra uma mensagem
-  if (status === 'loading') {
-    return <p>Carregando...</p>
-  }
-
-  // Se o usuário estiver autenticado, mostra a mensagem de boas-vindas
   if (status === 'authenticated') {
     return (
-      <main className="flex min-h-screen flex-col items-center justify-center p-24">
-        <h1 className="text-2xl mb-4">Bem-vindo, {session.user?.name}!</h1>
-        <p>Email: {session.user?.email}</p>
-        <p className="mb-4">Role: {session.user?.role}</p>
-        <button
-          onClick={() => signOut()}
-          className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-        >
-          Sair
-        </button>
-      </main>
-    )
+      <Link href="/dashboard" className="rounded-md bg-brand-accent px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-brand-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 transition-colors">
+        Acessar Dashboard
+      </Link>
+    );
   }
 
-  // Se não estiver autenticado, mostra o formulário de login
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-24">
-      <h1 className="text-2xl mb-4">Login</h1>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="Email"
-          className="p-2 border rounded text-black"
-          required
-        />
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Senha"
-          className="p-2 border rounded text-black"
-          required
-        />
-        <button
-          type="submit"
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-        >
-          Entrar
-        </button>
-      </form>
-    </main>
-  )
+    <Link href="/login" className="rounded-md bg-brand-accent px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-brand-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 transition-colors">
+      Acessar o Sistema
+    </Link>
+  );
+};
+
+
+export default function HomePage() {
+  return (
+    <div className="bg-brand-background">
+      {/* Cabeçalho */}
+      <header className="absolute inset-x-0 top-0 z-50">
+        <nav className="flex items-center justify-between p-6 lg:px-8" aria-label="Global">
+          <div className="flex lg:flex-1">
+            <a href="#" className="-m-1.5 p-1.5">
+              <span className="text-xl font-bold text-brand-primary">Clínica-App</span>
+            </a>
+          </div>
+          <div className="lg:flex lg:flex-1 lg:justify-end">
+            <ActionButton />
+          </div>
+        </nav>
+      </header>
+
+      {/* Seção Principal (Hero) */}
+      <main className="relative isolate px-6 pt-14 lg:px-8">
+        <div className="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56">
+          <div className="text-center">
+            <h1 className="text-4xl font-bold tracking-tight text-brand-primary sm:text-6xl">
+              Gestão Simplificada para seu Consultório
+            </h1>
+            <p className="mt-6 text-lg leading-8 text-gray-600">
+              Otimize seus agendamentos, gerencie seus pacientes e tenha o controle total da sua clínica com uma ferramenta moderna e intuitiva.
+            </p>
+            <div className="mt-10 flex items-center justify-center gap-x-6">
+              <ActionButton />
+              <a href="#" className="text-sm font-semibold leading-6 text-brand-primary">
+                Saiba mais <span aria-hidden="true">→</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      {/* Rodapé (Exemplo) */}
+      <footer className="text-center p-4 mt-10 border-t">
+        <p className="text-center text-gray-500 text-xs">
+          &copy;{new Date().getFullYear()} Clínica-App. Todos os direitos reservados.
+        </p>
+      </footer>
+    </div>
+  );
 }
