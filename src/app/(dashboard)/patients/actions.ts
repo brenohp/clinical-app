@@ -48,3 +48,41 @@ export async function createPatient(formData: FormData) {
   // Redireciona o usuário para a página de listagem após o sucesso
   redirect('/patients');
 }
+
+export async function updatePatient(patientId: string, formData: FormData) {
+  // AINDA NÃO TEMOS O CÓDIGO DE AUTENTICAÇÃO, MAS A LÓGICA SERIA AQUI:
+  // const session = await auth();
+  // if (!session?.user || session.user.role !== 'ADMIN') {
+  //   throw new Error('Acesso não autorizado.');
+  // }
+
+  const data = {
+    name: formData.get('name') as string,
+    cpf: formData.get('cpf') as string,
+    birthDate: new Date(formData.get('birthDate') as string),
+    phone: formData.get('phone') as string,
+    email: formData.get('email') as string,
+  };
+
+  try {
+    await prisma.patient.update({
+      where: {
+        id: patientId, // Usa o ID para saber qual paciente atualizar
+      },
+      data: data, // Usa os novos dados do formulário
+    });
+
+    console.log('Paciente atualizado com sucesso!');
+
+  } catch (error) {
+    console.error('Erro ao atualizar paciente:', error);
+    throw new Error('Não foi possível atualizar o paciente.');
+  }
+
+  // Limpa o cache das páginas de pacientes para garantir que a lista seja atualizada
+  revalidatePath('/patients');
+  revalidatePath(`/patients/${patientId}/edit`);
+
+  // Redireciona o usuário de volta para a lista
+  redirect('/patients');
+}
