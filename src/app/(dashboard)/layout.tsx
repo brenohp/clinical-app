@@ -2,32 +2,28 @@
 'use client';
 
 import Link from 'next/link';
-import { useState, useEffect } from 'react'; // 1. Importamos useEffect
+import { useState, useEffect } from 'react';
 import { Menu, PanelLeftClose, PanelRightClose } from 'lucide-react';
 import { SidebarNav } from './_components/SidebarNav';
-import { usePathname } from 'next/navigation'; // Importamos para fechar o menu na navegação
+import { usePathname } from 'next/navigation';
+import { UserProfile } from './_components/UserProfile'; // 1. Importamos o novo componente
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  // Estado para o menu retrátil no desktop
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  // 2. Novo estado APENAS para o menu mobile
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
   const pathname = usePathname();
 
-  // Efeito para fechar o menu mobile sempre que a rota mudar
   useEffect(() => {
     setIsMobileMenuOpen(false);
   }, [pathname]);
 
-
   return (
     <div className="flex h-screen bg-brand-background">
-      {/* Overlay para o fundo quando o menu mobile estiver aberto */}
+      {/* Overlay */}
       <div 
         className={`fixed inset-0 z-20 bg-black/50 transition-opacity duration-300 md:hidden ${
           isMobileMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
@@ -53,14 +49,13 @@ export default function DashboardLayout({
           </Link>
           <button 
             onClick={() => setIsSidebarOpen(!isSidebarOpen)} 
-            className="text-gray-300 hover:text-white hidden md:block" // Esconde em telas mobile
+            className="text-gray-300 hover:text-white hidden md:block"
           >
             {isSidebarOpen ? <PanelLeftClose size={24} /> : <PanelRightClose size={24} />}
           </button>
         </div>
 
         <div className="flex-1 mt-4">
-          {/* No mobile, a sidebar sempre está "aberta" (mostrando texto) quando visível */}
           <SidebarNav isSidebarOpen={isSidebarOpen} />
         </div>
       </aside>
@@ -69,7 +64,6 @@ export default function DashboardLayout({
       <div className="flex-1 flex flex-col overflow-hidden">
         <header className="bg-white shadow-sm p-4 flex justify-between items-center">
           <div className="flex items-center">
-            {/* 3. Botão de menu para mobile agora tem uma função */}
             <button 
               onClick={() => setIsMobileMenuOpen(true)}
               className="text-gray-600 md:hidden"
@@ -80,11 +74,10 @@ export default function DashboardLayout({
               Painel Administrativo
             </h1>
           </div>
-          <div className="flex items-center space-x-4">
-            <div className="w-8 h-8 rounded-full bg-brand-accent-light flex items-center justify-center text-brand-primary font-bold">
-              A
-            </div>
-          </div>
+          
+          {/* 2. A div do avatar foi substituída pelo nosso novo componente */}
+          <UserProfile />
+
         </header>
         <main className="flex-1 overflow-x-hidden overflow-y-auto p-6">
           {children}
