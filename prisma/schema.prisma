@@ -23,6 +23,7 @@ model User {
   role      String   @default("USER") // Ex: "ADMIN", "DOCTOR", "ASSISTANT"
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  appointments Appointment[] 
 }
 
 model Patient {
@@ -32,6 +33,25 @@ model Patient {
   birthDate DateTime
   phone     String
   email     String? // O '?' torna o campo opcional
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  appointments Appointment[]
+}
+
+model Appointment {
+  id              String   @id @default(cuid())
+  appointmentDate DateTime // Data e hora da consulta
+  status          String   @default("AGENDADA") // Ex: AGENDADA, CONFIRMADA, REALIZADA, CANCELADA
+  notes           String?  // Anotações opcionais
+
+  // Relação com Paciente: Uma consulta pertence a um paciente.
+  patientId String
+  patient   Patient @relation(fields: [patientId], references: [id])
+
+  // Relação com Usuário (Médico): Uma consulta é de um médico.
+  doctorId String
+  doctor   User   @relation(fields: [doctorId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

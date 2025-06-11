@@ -1,26 +1,46 @@
 // app/(dashboard)/layout.tsx
+'use client';
 
 import Link from 'next/link';
-import { Menu } from 'lucide-react';
-// Note: importamos com CHAVES porque é uma exportação nomeada
+import { useState } from 'react';
+import { Menu, PanelLeftClose, PanelRightClose } from 'lucide-react';
 import { SidebarNav } from './_components/SidebarNav';
 
-// Note: esta é uma EXPORTAÇÃO PADRÃO
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+
   return (
     <div className="flex h-screen bg-brand-background">
-      <aside className="w-64 bg-brand-primary text-white flex flex-col">
-        <div className="p-6">
-          <Link href="/painel" className="text-2xl font-semibold text-white hover:opacity-80 transition-opacity">
+      <aside 
+        className={`bg-brand-primary text-white flex flex-col transition-all duration-300 ease-in-out ${
+          isSidebarOpen ? 'w-64 p-6' : 'w-20 p-4'
+        }`}
+      >
+        {/* CORREÇÃO APLICADA AQUI */}
+        <div 
+          className={`flex items-center ${
+            isSidebarOpen ? 'justify-between' : 'justify-center'
+          }`}
+        >
+          {/* Trocamos 'opacity-0' por 'hidden' para melhor comportamento no layout */}
+          <Link href="/painel" className={`text-2xl font-semibold text-white transition-opacity duration-200 ${!isSidebarOpen && 'hidden'}`}>
             ClinicalAPP
           </Link>
+          <button 
+            onClick={() => setIsSidebarOpen(!isSidebarOpen)} 
+            className="text-gray-300 hover:text-white"
+          >
+            {isSidebarOpen ? <PanelLeftClose size={24} /> : <PanelRightClose size={24} />}
+          </button>
         </div>
-        
-        <SidebarNav /> 
+
+        <div className="flex-1 mt-8">
+          <SidebarNav isSidebarOpen={isSidebarOpen} />
+        </div>
         
       </aside>
 
