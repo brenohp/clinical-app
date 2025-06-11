@@ -11,8 +11,8 @@ const ActionButton = () => {
   // Se o usuário já estiver logado, o botão leva para o Dashboard
   if (status === 'authenticated') {
     return (
-      <Link href="/dashboard" className="rounded-md bg-brand-accent px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-brand-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 transition-colors">
-        Acessar Dashboard
+      <Link href="/painel" className="rounded-md bg-brand-accent px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-brand-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 transition-colors">
+        Acessar Painel
       </Link>
     );
   }
@@ -35,7 +35,7 @@ export default function HomePage() {
         <nav className="flex items-center justify-between p-6 lg:px-8" aria-label="Global">
           <div className="flex lg:flex-1">
             <a href="#" className="-m-1.5 p-1.5">
-              <span className="text-xl font-bold text-brand-primary">Clínica-App</span>
+              <span className="text-xl font-bold text-brand-primary">Clinical App</span>
             </a>
           </div>
           <div className="lg:flex lg:flex-1 lg:justify-end">
@@ -67,7 +67,7 @@ export default function HomePage() {
       {/* Rodapé */}
       <footer className="text-center p-4 border-t">
         <p className="text-center text-gray-500 text-xs">
-          &copy;{new Date().getFullYear()} Clínica-App. Todos os direitos reservados.
+          &copy;{new Date().getFullYear()} ClinicalApp. Todos os direitos reservados.
         </p>
       </footer>
     </div>

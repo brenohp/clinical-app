@@ -1,23 +1,18 @@
-// middleware.ts
+// src/middleware.ts
 import { withAuth } from "next-auth/middleware"
 
-export default withAuth(
-  // withAuth "aumenta" sua requisição com o token do usuário.
-  // Ele já lida com o redirecionamento se o usuário não estiver logado.
-);
+// O withAuth já possui a lógica de redirecionar o usuário se ele não estiver logado.
+// Não precisamos de configuração extra aqui por enquanto.
+export default withAuth;
 
-// Aplica o middleware do NextAuth a rotas específicas
+// Aqui definimos EXATAMENTE quais rotas devem exigir autenticação.
 export const config = {
   matcher: [
-    /*
-     * Corresponde a todas as rotas, exceto as que começam com:
-     * - api (rotas de API)
-     * - _next/static (arquivos estáticos)
-     * - _next/image (arquivos de otimização de imagem)
-     * - favicon.ico (ícone do site)
-     *
-     * E também exclui a página de login para evitar um loop de redirecionamento.
-     */
-    '/((?!api|_next/static|_next/image|favicon.ico|login).*)',
+    // Protege a página principal do dashboard
+    '/painel',
+
+    // Protege a página de pacientes e tudo que estiver dentro dela
+    // ex: /patients, /patients/new, /patients/ID/edit
+    '/patients/:path*', 
   ],
 }

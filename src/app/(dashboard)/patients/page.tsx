@@ -2,8 +2,12 @@
 
 import { PrismaClient } from '@prisma/client';
 import Link from 'next/link';
+import { DeleteButton } from './_components/DeleteButton'; // <-- 1. IMPORTAÇÃO
 
 const prisma = new PrismaClient();
+
+// Se você não moveu o DeleteButton para a pasta _components, 
+// o caminho da importação acima seria: import { DeleteButton } from './DeleteButton';
 
 export default async function PatientsPage() {
   const patients = await prisma.patient.findMany({
@@ -32,7 +36,6 @@ export default async function PatientsPage() {
               <th className="px-6 py-3 text-left text-xs font-medium text-brand-accent uppercase tracking-wider">CPF</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-brand-accent uppercase tracking-wider">Telefone</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-brand-accent uppercase tracking-wider">Data de Nasc.</th>
-              {/* NOVA COLUNA DE AÇÕES */}
               <th className="px-6 py-3 text-left text-xs font-medium text-brand-accent uppercase tracking-wider">Ações</th>
             </tr>
           </thead>
@@ -52,11 +55,14 @@ export default async function PatientsPage() {
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-brand-accent">
                     {new Date(patient.birthDate).toLocaleDateString('pt-BR')}
                   </td>
-                  {/* NOVO LINK DE EDIÇÃO */}
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <Link href={`/patients/${patient.id}/edit`} className="text-brand-accent hover:text-brand-primary hover:underline">
                       Editar
                     </Link>
+                    
+                    {/* 2. USO DO NOVO COMPONENTE */}
+                    <DeleteButton patientId={patient.id} />
+
                   </td>
                 </tr>
               ))

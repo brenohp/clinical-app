@@ -86,3 +86,27 @@ export async function updatePatient(patientId: string, formData: FormData) {
   // Redireciona o usuário de volta para a lista
   redirect('/patients');
 }
+
+export async function deletePatient(patientId: string) {
+  // AINDA NÃO TEMOS O CÓDIGO DE AUTENTICAÇÃO, MAS A LÓGICA SERIA AQUI:
+  // const session = await auth();
+  // if (!session?.user || session.user.role !== 'ADMIN') {
+  //   throw new Error('Acesso não autorizado.');
+  // }
+  
+  try {
+    await prisma.patient.delete({
+      where: {
+        id: patientId,
+      },
+    });
+    console.log('Paciente excluído com sucesso!');
+
+  } catch (error) {
+    console.error('Erro ao excluir paciente:', error);
+    throw new Error('Não foi possível excluir o paciente.');
+  }
+
+  // Limpa o cache da página de listagem para que o paciente removido desapareça
+  revalidatePath('/patients');
+}
