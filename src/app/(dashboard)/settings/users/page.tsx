@@ -8,7 +8,6 @@ import { PlusCircle } from 'lucide-react';
 
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'; 
 import { UsersTable } from '@/components/admin/UsersTable'; 
-// 1. Importamos nosso novo componente de cabeçalho
 import { PageHeader } from '@/components/layout/PageHeader'; 
 
 const prisma = new PrismaClient();
@@ -39,19 +38,17 @@ export default async function GestaoDeUsuariosPage() {
 
   return (
     <div className="p-4 md:p-8">
-      {/* 2. Substituímos todo o cabeçalho antigo por uma única chamada de componente */}
       <PageHeader
         title="Gestão de Usuários"
         description="Adicione, edite e gerencie os profissionais do sistema."
         backHref="/configuracoes"
       >
-        {/* O botão "Adicionar Usuário" agora é um "filho" do PageHeader */}
         <Link 
-            href="/configuracoes/usuarios/novo" 
-            className="flex items-center gap-2 bg-brand-accent text-white py-2 px-4 rounded-lg hover:bg-brand-primary transition-colors duration-200"
+            href="/configuracoes/usuarios/new" 
+            className="flex items-center gap-2 bg-brand-accent text-white py-2 px-4 rounded-lg hover:bg-brand-primary transition-colors duration-200 flex-shrink-0"
         >
             <PlusCircle size={20} />
-            <span className="font-medium">Adicionar Usuário</span>
+            <span className="font-medium whitespace-nowrap">Adicionar Usuário</span>
         </Link>
       </PageHeader>
 

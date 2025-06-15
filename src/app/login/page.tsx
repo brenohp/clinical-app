@@ -31,7 +31,7 @@ export default function LoginPage() {
       } else if (result?.ok) {
         // 3. Lógica de redirecionamento inteligente
         const callbackUrl = searchParams.get('callbackUrl') // Pega a URL de callback
-        router.push(callbackUrl || '/painel') // Redireciona para ela ou para /painel como padrão
+        router.push(callbackUrl || '/panel') // Redireciona para ela ou para /panel como padrão
       }
     } catch {
       setError('Ocorreu um erro inesperado.')

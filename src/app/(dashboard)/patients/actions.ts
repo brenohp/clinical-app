@@ -1,19 +1,17 @@
 // app/(dashboard)/patients/actions.ts
-'use server'; // Essencial para definir que todas as funções aqui são Server Actions
+'use server';
 
 import { PrismaClient } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
-import { redirect } from 'next/navigation';
 
 const prisma = new PrismaClient();
 
-// Define um tipo para os dados do paciente para garantir a tipagem
 type PatientData = {
   name: string;
   cpf: string;
-  birthDate: string; // Vem como string do formulário
+  birthDate: string;
   phone: string;
-  email?: string | null; // Email é opcional
+  email?: string | null;
 };
 
 export async function createPatient(formData: FormData) {
@@ -25,37 +23,35 @@ export async function createPatient(formData: FormData) {
     email: formData.get('email') as string,
   };
 
+  if (!data.name || !data.cpf || !data.birthDate || !data.phone) {
+    return { success: false, message: 'Todos os campos, exceto email, são obrigatórios.'};
+  }
+
   try {
     await prisma.patient.create({
       data: {
         ...data,
-        // O campo 'birthDate' no DB é DateTime, então convertemos a string
         birthDate: new Date(data.birthDate), 
       },
     });
 
-    console.log('Paciente cadastrado com sucesso!');
+    revalidatePath('/patients'); 
+    return { success: true, message: 'Paciente cadastrado com sucesso!' };
 
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Erro ao cadastrar paciente:', error);
-    // Em um app real, você retornaria uma mensagem de erro para a UI
-    throw new Error('Não foi possível cadastrar o paciente.');
+    const prismaError = error as { code?: string, meta?: { target?: string[] }};
+    if (prismaError?.code === 'P2002' && prismaError?.meta?.target?.includes('cpf')) {
+        return { success: false, message: 'Este CPF já está cadastrado no sistema.' };
+    }
+    return { success: false, message: 'Não foi possível cadastrar o paciente.' };
   }
-
-  // Limpa o cache da página de listagem de pacientes (que criaremos no futuro)
-  revalidatePath('/patients'); 
-
-  // Redireciona o usuário para a página de listagem após o sucesso
-  redirect('/patients');
 }
 
+// ========================================================================
+// A LÓGICA DE ATUALIZAÇÃO FOI TOTALMENTE ALTERADA AQUI
+// ========================================================================
 export async function updatePatient(patientId: string, formData: FormData) {
-  // AINDA NÃO TEMOS O CÓDIGO DE AUTENTICAÇÃO, MAS A LÓGICA SERIA AQUI:
-  // const session = await auth();
-  // if (!session?.user || session.user.role !== 'ADMIN') {
-  //   throw new Error('Acesso não autorizado.');
-  // }
-
   const data = {
     name: formData.get('name') as string,
     cpf: formData.get('cpf') as string,
@@ -67,46 +63,59 @@ export async function updatePatient(patientId: string, formData: FormData) {
   try {
     await prisma.patient.update({
       where: {
-        id: patientId, // Usa o ID para saber qual paciente atualizar
+        id: patientId,
       },
-      data: data, // Usa os novos dados do formulário
+      data: data,
     });
 
-    console.log('Paciente atualizado com sucesso!');
+    revalidatePath('/patients');
+    revalidatePath(`/patients/${patientId}/edit`);
 
-  } catch (error) {
+    return { success: true, message: 'Paciente atualizado com sucesso!' };
+
+  } catch (error: unknown) {
     console.error('Erro ao atualizar paciente:', error);
-    throw new Error('Não foi possível atualizar o paciente.');
+    // Tratamento para erro de CPF duplicado na atualização
+    const prismaError = error as { code?: string, meta?: { target?: string[] }};
+    if (prismaError?.code === 'P2002' && prismaError?.meta?.target?.includes('cpf')) {
+        return { success: false, message: 'Este CPF já pertence a outro paciente.' };
+    }
+    return { success: false, message: 'Não foi possível atualizar o paciente.' };
   }
-
-  // Limpa o cache das páginas de pacientes para garantir que a lista seja atualizada
-  revalidatePath('/patients');
-  revalidatePath(`/patients/${patientId}/edit`);
-
-  // Redireciona o usuário de volta para a lista
-  redirect('/patients');
 }
 
+
 export async function deletePatient(patientId: string) {
-  // AINDA NÃO TEMOS O CÓDIGO DE AUTENTICAÇÃO, MAS A LÓGICA SERIA AQUI:
-  // const session = await auth();
-  // if (!session?.user || session.user.role !== 'ADMIN') {
-  //   throw new Error('Acesso não autorizado.');
-  // }
-  
+  if (!patientId) {
+    return { success: false, message: 'ID do paciente não fornecido.' };
+  }
+
   try {
+    const appointmentCount = await prisma.appointment.count({
+      where: {
+        patientId: patientId,
+      },
+    });
+
+    if (appointmentCount > 0) {
+      return { 
+        success: false, 
+        message: `Não é possível excluir. Este paciente possui ${appointmentCount} agendamento(s) vinculado(s). Por favor, remova os agendamentos primeiro.` 
+      };
+    }
+
     await prisma.patient.delete({
       where: {
         id: patientId,
       },
     });
+
     console.log('Paciente excluído com sucesso!');
+    revalidatePath('/patients');
+    return { success: true, message: 'Paciente excluído com sucesso.' };
 
   } catch (error) {
     console.error('Erro ao excluir paciente:', error);
-    throw new Error('Não foi possível excluir o paciente.');
+    return { success: false, message: 'Ocorreu um erro inesperado ao tentar excluir o paciente.' };
   }
-
-  // Limpa o cache da página de listagem para que o paciente removido desapareça
-  revalidatePath('/patients');
 }

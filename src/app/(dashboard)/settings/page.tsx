@@ -56,7 +56,7 @@ export default async function ConfiguracoesPage() {
 
             {/* Card 1: Gerenciar Usuários (Funcional) */}
             <Link 
-              href="/configuracoes/usuarios"
+              href="/settings/users"
               className="group block p-6 bg-white rounded-lg shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
             >
               <div className="flex items-start justify-between">

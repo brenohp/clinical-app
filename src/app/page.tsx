@@ -11,8 +11,8 @@ const ActionButton = () => {
   // Se o usuário já estiver logado, o botão leva para o Dashboard
   if (status === 'authenticated') {
     return (
-      <Link href="/painel" className="rounded-md bg-brand-accent px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-brand-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 transition-colors">
-        Acessar Painel
+      <Link href="/panel" className="rounded-md bg-brand-accent px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-brand-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 transition-colors">
+        Acessar Sistema
       </Link>
     );
   }

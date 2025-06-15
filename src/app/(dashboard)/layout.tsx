@@ -6,7 +6,8 @@ import { useState, useEffect } from 'react';
 import { Menu, PanelLeftClose, PanelRightClose } from 'lucide-react';
 import { SidebarNav } from './_components/SidebarNav';
 import { usePathname } from 'next/navigation';
-import { UserProfile } from './_components/UserProfile'; // 1. Importamos o novo componente
+import { UserProfile } from './_components/UserProfile';
+import { Toaster } from 'react-hot-toast'; // 1. Verifique se a importação está aqui
 
 export default function DashboardLayout({
   children,
@@ -23,7 +24,10 @@ export default function DashboardLayout({
 
   return (
     <div className="flex h-screen bg-brand-background">
-      {/* Overlay */}
+      {/* 2. O Toaster fica aqui, no nível mais alto do layout, para aparecer sobre tudo */}
+      <Toaster position="top-right" />
+
+      {/* Overlay para menu mobile */}
       <div 
         className={`fixed inset-0 z-20 bg-black/50 transition-opacity duration-300 md:hidden ${
           isMobileMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
@@ -75,7 +79,6 @@ export default function DashboardLayout({
             </h1>
           </div>
           
-          {/* 2. A div do avatar foi substituída pelo nosso novo componente */}
           <UserProfile />
 
         </header>

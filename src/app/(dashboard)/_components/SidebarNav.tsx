@@ -6,13 +6,13 @@ import { usePathname } from 'next/navigation';
 import { LayoutDashboard, Users, Settings, Calendar } from 'lucide-react';
 
 const navLinks = [
-  { href: '/painel', label: 'Painel', icon: LayoutDashboard },
+  { href: '/panel', label: 'Painel', icon: LayoutDashboard },
   { href: '/patients', label: 'Pacientes', icon: Users },
   { href: '/appointments', label: 'Agenda', icon: Calendar },
 ];
 
 const footerLinks = [
-  { href: '/configuracoes', label: 'Configurações', icon: Settings }
+  { href: '/settings', label: 'Configurações', icon: Settings }
 ];
 
 export function SidebarNav({ isSidebarOpen }: { isSidebarOpen: boolean }) {
