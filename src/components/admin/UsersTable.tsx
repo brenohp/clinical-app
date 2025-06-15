@@ -3,8 +3,7 @@
 'use client';
 
 // Importamos o tipo que definimos na nossa página de configurações
-import type { UserForTable } from '@/app/(dashboard)/configuracoes/page';
-
+import type { UserForTable } from '@/app/(dashboard)/configuracoes/usuarios/page';
 type UsersTableProps = {
   users: UserForTable[];
 };

@@ -1,18 +1,18 @@
-// app/(dashboard)/patients/new/page.tsx
-
 import { createPatient } from '../actions';
+import { PageHeader } from '@/components/layout/PageHeader';
 
 export default function NewPatientPage() {
   return (
     <div className="p-4 md:p-8">
-      <h1 className="text-2xl font-bold text-brand-primary mb-6">
-        Cadastrar Novo Paciente
-      </h1>
+      <PageHeader
+        title="Cadastrar Novo Paciente"
+        description="Preencha os dados para criar um novo cadastro."
+        backHref="/patients"
+      />
 
       <div className="bg-white p-6 rounded-lg shadow-md max-w-xl">
         <form action={createPatient}>
           <div className="space-y-5">
-            {/* Nome Completo */}
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-brand-primary">
                 Nome Completo
@@ -26,7 +26,6 @@ export default function NewPatientPage() {
               />
             </div>
 
-            {/* CPF */}
             <div>
               <label htmlFor="cpf" className="block text-sm font-medium text-brand-primary">
                 CPF
@@ -40,7 +39,6 @@ export default function NewPatientPage() {
               />
             </div>
             
-            {/* Data de Nascimento */}
             <div>
               <label htmlFor="birthDate" className="block text-sm font-medium text-brand-primary">
                 Data de Nascimento
@@ -54,7 +52,6 @@ export default function NewPatientPage() {
               />
             </div>
 
-            {/* Telefone */}
             <div>
               <label htmlFor="phone" className="block text-sm font-medium text-brand-primary">
                 Telefone
@@ -68,7 +65,6 @@ export default function NewPatientPage() {
               />
             </div>
 
-            {/* Email (Opcional) */}
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-brand-primary">
                 Email (Opcional)

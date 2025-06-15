@@ -3,6 +3,7 @@
 import prisma from '@/lib/prisma';
 import { createAppointment } from '../actions';
 import Link from 'next/link';
+import { PageHeader } from '@/components/layout/PageHeader'; // 1. Importa o componente
 
 export default async function NewAppointmentPage() {
   const [patients, doctors] = await Promise.all([
@@ -10,10 +11,15 @@ export default async function NewAppointmentPage() {
     prisma.user.findMany({ orderBy: { name: 'asc' } }),
   ]);
 
+  // Se não houver pacientes ou médicos, exibe um estado de aviso
   if (patients.length === 0 || doctors.length === 0) {
     return (
       <div className="p-4 md:p-8">
-        <h1 className="text-2xl font-bold text-brand-primary mb-6">Agendar Nova Consulta</h1>
+        {/* 2. Aplica o PageHeader no estado de aviso */}
+        <PageHeader
+          title="Agendar Nova Consulta"
+          backHref="/appointments"
+        />
         <div className="bg-white p-6 rounded-lg shadow-md">
           <p className="text-brand-primary">
             Você precisa ter ao menos um paciente e um médico cadastrados para poder agendar uma consulta.
@@ -28,9 +34,15 @@ export default async function NewAppointmentPage() {
     );
   }
 
+  // Retorno principal com o formulário de agendamento
   return (
     <div className="p-4 md:p-8">
-      <h1 className="text-2xl font-bold text-brand-primary mb-6">Agendar Nova Consulta</h1>
+      {/* 3. Aplica o PageHeader também no formulário principal */}
+      <PageHeader
+        title="Agendar Nova Consulta"
+        description="Preencha os dados para criar um novo agendamento."
+        backHref="/appointments"
+      />
       <div className="bg-white p-6 rounded-lg shadow-md max-w-xl">
         <form action={createAppointment}>
           <div className="space-y-5">
@@ -44,9 +56,8 @@ export default async function NewAppointmentPage() {
                 name="patientId"
                 className="mt-1 block w-full px-3 py-2 bg-white border border-brand-accent-light rounded-md text-brand-primary focus:outline-none focus:ring-brand-accent focus:border-brand-accent"
                 required
-                defaultValue="" // <-- CORREÇÃO APLICADA AQUI
+                defaultValue=""
               >
-                {/* E o atributo 'selected' foi removido daqui */}
                 <option value="" disabled>Selecione um paciente</option>
                 {patients.map((patient) => (
                   <option key={patient.id} value={patient.id}>
@@ -66,9 +77,8 @@ export default async function NewAppointmentPage() {
                 name="doctorId"
                 className="mt-1 block w-full px-3 py-2 bg-white border border-brand-accent-light rounded-md text-brand-primary focus:outline-none focus:ring-brand-accent focus:border-brand-accent"
                 required
-                defaultValue="" // <-- CORREÇÃO APLICADA AQUI
+                defaultValue=""
               >
-                {/* E o atributo 'selected' foi removido daqui */}
                 <option value="" disabled>Selecione um profissional</option>
                 {doctors.map((doctor) => (
                   <option key={doctor.id} value={doctor.id}>
@@ -78,7 +88,7 @@ export default async function NewAppointmentPage() {
               </select>
             </div>
 
-            {/* ... o resto do formulário continua igual ... */}
+            {/* Data e Hora */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label htmlFor="date" className="block text-sm font-medium text-brand-primary">
@@ -106,6 +116,7 @@ export default async function NewAppointmentPage() {
               </div>
             </div>
 
+            {/* Anotações */}
             <div>
               <label htmlFor="notes" className="block text-sm font-medium text-brand-primary">
                 Anotações (Opcional)

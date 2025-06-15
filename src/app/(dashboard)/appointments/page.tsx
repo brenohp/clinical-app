@@ -1,7 +1,10 @@
 // app/(dashboard)/appointments/page.tsx
+
 import Link from 'next/link';
 import prisma from '@/lib/prisma';
 import { DeleteAppointmentButton } from './_components/DeleteAppointmentButton';
+import { PageHeader } from '@/components/layout/PageHeader';
+import { PlusCircle } from 'lucide-react';
 
 const statusStyles: { [key: string]: string } = {
   AGENDADA: 'bg-blue-100 text-blue-800',
@@ -22,23 +25,23 @@ export default async function AppointmentsPage() {
   });
 
   return (
-    <div>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-brand-primary">
-          Gestão de Consultas
-        </h1>
+    <div className="p-4 md:p-8">
+      <PageHeader
+        title="Agenda de Consultas"
+        description="Visualize e gerencie todos os agendamentos."
+      >
         <Link
           href="/appointments/new"
-          className="bg-brand-accent text-white py-2 px-4 rounded-md shadow-sm hover:brightness-95"
+          // A classe flex-shrink-0 foi adicionada aqui
+          className="flex items-center gap-2 bg-brand-accent text-white py-2 px-4 rounded-lg hover:bg-brand-primary transition-colors duration-200 flex-shrink-0"
         >
-          Agendar Nova Consulta
+          <PlusCircle size={20} />
+          <span className="font-medium whitespace-nowrap">Agendar Consulta</span>
         </Link>
-      </div>
+      </PageHeader>
       
       <div className="bg-white shadow-md rounded-lg overflow-hidden">
-        {/* 1. Adicionamos esta div com a classe de overflow */}
         <div className="overflow-x-auto">
-          {/* 2. A tabela agora está dentro da div */}
           <table className="min-w-full divide-y divide-brand-accent-light">
             <thead className="bg-brand-accent-light/30">
               <tr>
