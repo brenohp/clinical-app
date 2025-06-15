@@ -31,7 +31,7 @@ export default async function GestaoDeUsuariosPage() {
   const session = await getServerSession(authOptions);
 
   if (!session || session.user.role !== 'ADMIN') {
-    redirect('/painel'); 
+    redirect('/panel'); 
   }
 
   const users = await getUsers();
@@ -41,10 +41,10 @@ export default async function GestaoDeUsuariosPage() {
       <PageHeader
         title="Gestão de Usuários"
         description="Adicione, edite e gerencie os profissionais do sistema."
-        backHref="/configuracoes"
+        backHref="/settings"
       >
         <Link 
-            href="/configuracoes/usuarios/new" 
+            href="/settings/users/new" 
             className="flex items-center gap-2 bg-brand-accent text-white py-2 px-4 rounded-lg hover:bg-brand-primary transition-colors duration-200 flex-shrink-0"
         >
             <PlusCircle size={20} />

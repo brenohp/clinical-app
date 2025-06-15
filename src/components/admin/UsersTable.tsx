@@ -2,8 +2,9 @@
 
 'use client';
 
-// Importamos o tipo que definimos na nossa página de configurações
-import type { UserForTable } from '@/app/(dashboard)/configuracoes/usuarios/page';
+import Link from 'next/link'; // 1. Adicionamos a importação do Link
+import type { UserForTable } from '@/app/(dashboard)/settings/users/page';
+
 type UsersTableProps = {
   users: UserForTable[];
 };
@@ -34,17 +35,21 @@ export function UsersTable({ users }: UsersTableProps) {
               <td className="py-4 px-4 whitespace-nowrap">
                 {new Date(user.createdAt).toLocaleDateString('pt-BR')}
               </td>
-              <td className="py-4 px-4 whitespace-nowrap">
-                <button className="text-brand-accent hover:text-brand-primary font-medium hover:underline">
+              {/* 2. O botão foi trocado por um Link funcional */}
+              <td className="py-4 px-4 whitespace-nowrap text-sm font-medium">
+                <Link 
+                  href={`/settings/users/${user.id}/edit`}
+                  className="text-brand-accent hover:text-brand-primary hover:underline"
+                >
                   Editar
-                </button>
+                </Link>
+                {/* Aqui futuramente entrará o botão de excluir usuário */}
               </td>
             </tr>
           ))}
         </tbody>
       </table>
       
-      {/* Mensagem para caso não haja usuários */}
       {users.length === 0 && (
         <div className="text-center py-10">
           <p className="text-gray-500">Nenhum usuário encontrado.</p>
