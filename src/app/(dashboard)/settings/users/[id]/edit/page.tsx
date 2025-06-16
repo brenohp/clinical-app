@@ -3,12 +3,12 @@
 import prisma from '@/lib/prisma';
 import { notFound } from 'next/navigation';
 import { PageHeader } from '@/components/layout/PageHeader';
-// Vamos criar o formulário no próximo passo
-// import { EditUserForm } from './_components/EditUserForm';
+import { EditUserForm } from './_components/EditUserForm'; // 1. Importa o nosso formulário
 
 export default async function EditUserPage({ params }: { params: { id: string } }) {
   const { id } = params;
 
+  // A busca dos dados do usuário continua aqui, no servidor
   const user = await prisma.user.findUnique({
     where: {
       id: id,
@@ -30,14 +30,12 @@ export default async function EditUserPage({ params }: { params: { id: string } 
       <PageHeader
         title="Editar Usuário"
         description={`Atualizando perfil de ${user.name}`}
-        backHref="/settings/users" // <-- ROTA ATUALIZADA AQUI
+        backHref="/settings/users"
       />
 
       <div className="bg-white p-6 rounded-lg shadow-md max-w-xl">
-        <p>O formulário de edição aparecerá aqui...</p>
-        {/* Futuramente, aqui renderizaremos o nosso formulário de cliente:
-        <EditUserForm user={user} /> 
-        */}
+        {/* 2. O parágrafo temporário é substituído pelo formulário real */}
+        <EditUserForm user={user} />
       </div>
     </div>
   );
