@@ -1,12 +1,11 @@
-// app/(dashboard)/configuracoes/page.tsx
-
 import Link from 'next/link';
 import { getServerSession } from 'next-auth/next';
-import { Users, Building, CreditCard, UserCircle, Edit } from 'lucide-react'; // Todos os ícones necessários
+import { Users, Building, CreditCard, UserCircle, Edit } from 'lucide-react';
 
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
-export default async function ConfiguracoesPage() {
+// Renomeado para SettingsPage para clareza
+export default async function SettingsPage() { 
   const session = await getServerSession(authOptions);
 
   return (
@@ -20,7 +19,7 @@ export default async function ConfiguracoesPage() {
         </p>
       </header>
 
-      {/* Seção de Perfil - Visível para todos */}
+      {/* Seção de Perfil */}
       <section className="mb-10">
         <h2 className="text-2xl font-semibold text-brand-primary mb-4 pb-2 border-b border-gray-200">
           Meu Perfil
@@ -35,17 +34,18 @@ export default async function ConfiguracoesPage() {
                     <p className="text-sm text-gray-500">{session?.user?.email}</p>
                 </div>
             </div>
-            <button 
-                disabled 
-                className="flex items-center gap-2 bg-gray-300 text-white py-2 px-4 rounded-lg cursor-not-allowed"
+            {/* O BOTÃO AGORA É UM LINK FUNCIONAL */}
+            <Link
+                href="/settings/profile" // Aponta para a página de perfil que criamos
+                className="flex items-center gap-2 bg-brand-accent text-white py-2 px-4 rounded-lg hover:bg-brand-primary transition-colors duration-200"
             >
                 <Edit size={16} />
                 <span className="font-medium">Editar Perfil</span>
-            </button>
+            </Link>
         </div>
       </section>
 
-      {/* Seção de Administração - Visível apenas para admins */}
+      {/* Seção de Administração */}
       {session?.user.role === 'ADMIN' && (
         <section>
           <h2 className="text-2xl font-semibold text-brand-primary mb-4 pb-2 border-b border-gray-200">
@@ -53,10 +53,9 @@ export default async function ConfiguracoesPage() {
           </h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
-
-            {/* Card 1: Gerenciar Usuários (Funcional) */}
+            {/* Card de Gerenciar Usuários */}
             <Link 
-              href="/settings/users"
+              href="/settings/users" // Rota corrigida
               className="group block p-6 bg-white rounded-lg shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
             >
               <div className="flex items-start justify-between">
@@ -98,7 +97,6 @@ export default async function ConfiguracoesPage() {
                   <p className="text-sm text-gray-600 mt-1">Gerencie planos e pagamentos.</p>
               </div>
             </div>
-
           </div>
         </section>
       )}

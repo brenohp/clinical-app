@@ -60,7 +60,7 @@ export function UserProfile() {
           {/* Links de Navegação */}
           <div className="py-1">
             <Link
-              href="/profile" // Rota para uma futura página de perfil
+              href="/settings/profile" // Rota para uma futura página de perfil
               className="w-full text-left flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
               onClick={() => setIsOpen(false)} // Fecha o menu ao clicar
             >
