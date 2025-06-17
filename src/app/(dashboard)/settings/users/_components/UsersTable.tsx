@@ -2,8 +2,9 @@
 
 'use client';
 
-import Link from 'next/link'; // 1. Adicionamos a importação do Link
+import Link from 'next/link';
 import type { UserForTable } from '@/app/(dashboard)/settings/users/page';
+import { DeleteUserButton } from './DeleteUserButton'; // 1. Importamos o novo botão
 
 type UsersTableProps = {
   users: UserForTable[];
@@ -35,7 +36,6 @@ export function UsersTable({ users }: UsersTableProps) {
               <td className="py-4 px-4 whitespace-nowrap">
                 {new Date(user.createdAt).toLocaleDateString('pt-BR')}
               </td>
-              {/* 2. O botão foi trocado por um Link funcional */}
               <td className="py-4 px-4 whitespace-nowrap text-sm font-medium">
                 <Link 
                   href={`/settings/users/${user.id}/edit`}
@@ -43,7 +43,8 @@ export function UsersTable({ users }: UsersTableProps) {
                 >
                   Editar
                 </Link>
-                {/* Aqui futuramente entrará o botão de excluir usuário */}
+                {/* 2. Adicionamos o botão de exclusão aqui */}
+                <DeleteUserButton userId={user.id} />
               </td>
             </tr>
           ))}

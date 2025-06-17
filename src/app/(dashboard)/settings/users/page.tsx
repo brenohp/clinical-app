@@ -7,7 +7,7 @@ import { PrismaClient, User } from '@prisma/client';
 import { PlusCircle } from 'lucide-react';
 
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'; 
-import { UsersTable } from '@/components/admin/UsersTable'; 
+import { UsersTable } from '@/app/(dashboard)/settings/users/_components/UsersTable'; 
 import { PageHeader } from '@/components/layout/PageHeader'; 
 
 const prisma = new PrismaClient();
