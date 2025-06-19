@@ -1,9 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,8 +8,6 @@ generator client {
 datasource db {
   provider  = "postgresql"
   url       = env("DATABASE_URL")
-  // uncomment next line if you use Prisma <5.10
-  // directUrl = env("DATABASE_URL_UNPOOLED")
 }
 
 model User {
@@ -20,11 +15,10 @@ model User {
   name      String
   email     String   @unique
   password  String
-  role      String   @default("USER") // Ex: "ADMIN", "DOCTOR", "ASSISTANT"
+  role      String   @default("USER")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   
-  // Relação com Clínica
   clinicId  String?
   clinic    Clinic?  @relation(fields: [clinicId], references: [id])
   
@@ -37,7 +31,7 @@ model Patient {
   cpf       String   @unique
   birthDate DateTime
   phone     String
-  email     String? // O '?' torna o campo opcional
+  email     String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -47,17 +41,19 @@ model Patient {
 
 model Appointment {
   id              String   @id @default(cuid())
-  appointmentDate DateTime // Data e hora da consulta
-  status          String   @default("AGENDADA") // Ex: AGENDADA, CONFIRMADA, REALIZADA, CANCELADA
-  notes           String?  // Anotações opcionais
+  appointmentDate DateTime
+  status          String   @default("AGENDADA")
+  notes           String?
 
-  // Relação com Paciente: Uma consulta pertence a um paciente.
   patientId String
   patient   Patient @relation(fields: [patientId], references: [id])
 
-  // Relação com Usuário (Médico): Uma consulta é de um médico.
   doctorId String
   doctor   User    @relation(fields: [doctorId], references: [id])
+  
+  // AJUSTE: Adicionada a relação com o tipo de serviço
+  serviceTypeId String?
+  serviceType   ServiceType? @relation(fields: [serviceTypeId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -65,14 +61,17 @@ model Appointment {
 
 model Clinic {
   id    String   @id @default(cuid())
-  name  String   // Nome fantasia da clínica
-  users User[]   // Usuários associados a esta clínica
-  units ClinicUnit[] // A clínica pode ter várias unidades
+  name  String
+  users User[]
+  units ClinicUnit[]
+  
+  // AJUSTE: Adicionada a relação com os serviços
+  services ServiceType[]
 }
 
 model ClinicUnit {
   id        String   @id @default(cuid())
-  name      String   // Ex: "Unidade Centro", "Consultório Principal"
+  name      String
   address   String
   city      String
   state     String
@@ -81,4 +80,22 @@ model ClinicUnit {
   
   clinicId  String
   clinic    Clinic   @relation(fields: [clinicId], references: [id])
+}
+
+// NOVO MODELO ADICIONADO ABAIXO
+model ServiceType {
+  id              String    @id @default(cuid())
+  name            String    // Ex: "Primeira Consulta", "Retorno", "Procedimento X"
+  description     String?
+  durationMinutes Int       // Duração do serviço em minutos. Ex: 30, 60
+  price           Decimal?  // Preço base do serviço
+  isActive        Boolean   @default(true) // Para poder ativar/desativar serviços
+
+  clinicId        String
+  clinic          Clinic    @relation(fields: [clinicId], references: [id])
+
+  appointments    Appointment[]
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 }
