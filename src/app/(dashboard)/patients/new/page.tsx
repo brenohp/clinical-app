@@ -1,7 +1,7 @@
 // app/(dashboard)/patients/new/page.tsx
 'use client'; 
 
-import { useState, FormEvent } from 'react'; // 1. Importamos o FormEvent
+import { useState, FormEvent } from 'react';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { createPatient } from '../actions';
@@ -11,13 +11,11 @@ export default function NewPatientPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
-  // 2. A função agora recebe o evento do formulário, como é o padrão do onSubmit
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault(); // Previne o recarregamento padrão da página
+    event.preventDefault();
     setIsLoading(true);
     const toastId = toast.loading('Cadastrando paciente...');
 
-    // 3. Criamos o FormData a partir do evento do formulário
     const formData = new FormData(event.currentTarget);
     const result = await createPatient(formData);
 
@@ -42,7 +40,6 @@ export default function NewPatientPage() {
       />
 
       <div className="bg-white p-6 rounded-lg shadow-md max-w-xl">
-        {/* 4. Trocamos 'action' por 'onSubmit' */}
         <form onSubmit={handleSubmit}>
           <div className="space-y-5">
             {/* O resto do formulário e dos inputs continua exatamente o mesmo */}
@@ -116,10 +113,12 @@ export default function NewPatientPage() {
             </div>
           </div>
 
-          <div className="mt-8">
+          {/* AJUSTE: A div do botão foi alterada para alinhar à direita */}
+          <div className="mt-8 flex justify-end">
             <button
               type="submit"
-              className="w-full bg-brand-accent text-white py-2.5 px-4 border border-transparent rounded-md shadow-sm font-medium hover:brightness-95 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-accent disabled:bg-gray-400"
+              // A classe w-full foi removida e o padding ajustado
+              className="bg-brand-accent text-white py-2.5 px-6 rounded-md shadow-sm font-medium hover:brightness-95 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-accent disabled:bg-gray-400"
               disabled={isLoading}
             >
               {isLoading ? 'Salvando...' : 'Salvar Paciente'}

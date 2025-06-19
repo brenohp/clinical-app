@@ -2,9 +2,8 @@
 
 import Link from 'next/link';
 import prisma from '@/lib/prisma';
-import { DeleteAppointmentButton } from './_components/DeleteAppointmentButton';
 import { PageHeader } from '@/components/layout/PageHeader';
-import { PlusCircle } from 'lucide-react';
+import { PlusCircle, Edit } from 'lucide-react';
 
 const statusStyles: { [key: string]: string } = {
   AGENDADA: 'bg-blue-100 text-blue-800',
@@ -30,26 +29,29 @@ export default async function AppointmentsPage() {
         title="Agenda de Consultas"
         description="Visualize e gerencie todos os agendamentos."
       >
-        <Link
-          href="/appointments/new"
-          // A classe flex-shrink-0 foi adicionada aqui
-          className="flex items-center gap-2 bg-brand-accent text-white py-2 px-4 rounded-lg hover:bg-brand-primary transition-colors duration-200 flex-shrink-0"
-        >
-          <PlusCircle size={20} />
-          <span className="font-medium whitespace-nowrap">Agendar Consulta</span>
-        </Link>
+        <div className="ml-4 flex-shrink-0">
+          <Link
+            href="/appointments/new"
+            className="flex items-center gap-2 bg-brand-accent text-white py-2 px-4 rounded-lg hover:bg-brand-primary transition-colors duration-200"
+          >
+            <PlusCircle size={20} />
+            <span className="font-medium whitespace-nowrap">Agendar Consulta</span>
+          </Link>
+        </div>
       </PageHeader>
       
-      <div className="bg-white shadow-md rounded-lg overflow-hidden">
+      <div className="bg-white shadow-md rounded-lg overflow-hidden mt-6">
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-brand-accent-light">
+          {/* AJUSTE: Adicionada a classe table-fixed */}
+          <table className="min-w-full divide-y divide-brand-accent-light table-fixed">
             <thead className="bg-brand-accent-light/30">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-brand-accent uppercase tracking-wider">Paciente</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-brand-accent uppercase tracking-wider">Médico</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-brand-accent uppercase tracking-wider">Data e Hora</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-brand-accent uppercase tracking-wider">Status</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-brand-accent uppercase tracking-wider">Ações</th>
+                {/* AJUSTE: Adicionadas larguras explícitas para cada coluna */}
+                <th className="px-6 py-3 text-left text-xs font-medium text-brand-accent uppercase tracking-wider w-3/12">Paciente</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-brand-accent uppercase tracking-wider w-3/12">Médico</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-brand-accent uppercase tracking-wider w-3/12">Data e Hora</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-brand-accent uppercase tracking-wider w-1/12">Status</th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-brand-accent uppercase tracking-wider w-2/12">Ações</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-brand-accent-light/50">
@@ -62,10 +64,10 @@ export default async function AppointmentsPage() {
               ) : (
                 appointments.map((appointment) => (
                   <tr key={appointment.id} className="hover:bg-brand-accent-light/20">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-brand-primary">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-brand-primary truncate">
                       {appointment.patient.name}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-brand-accent">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-brand-accent truncate">
                       {appointment.doctor.name}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-brand-accent">
@@ -87,10 +89,15 @@ export default async function AppointmentsPage() {
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <Link href={`/appointments/${appointment.id}/edit`} className="text-brand-accent hover:text-brand-primary hover:underline">
-                        Editar
-                      </Link>
-                      <DeleteAppointmentButton appointmentId={appointment.id} />
+                      <div className="flex justify-end">
+                        <Link 
+                          href={`/appointments/${appointment.id}/edit`} 
+                          className="inline-flex items-center gap-2 text-brand-accent hover:text-brand-primary p-2 rounded-md hover:bg-gray-100 transition-colors"
+                        >
+                          <Edit size={16} />
+                          <span>Editar</span>
+                        </Link>
+                      </div>
                     </td>
                   </tr>
                 ))

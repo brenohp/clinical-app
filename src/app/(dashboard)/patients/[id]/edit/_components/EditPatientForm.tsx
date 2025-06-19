@@ -6,6 +6,8 @@ import type { Patient } from '@prisma/client';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { updatePatient } from '@/app/(dashboard)/patients/actions';
+// NOVO: Importando o botão de exclusão que criamos
+import { DeletePatientButton } from '../_components/DeletePatientButton';
 
 type EditPatientFormProps = {
   patient: Patient;
@@ -38,6 +40,7 @@ export function EditPatientForm({ patient }: EditPatientFormProps) {
   return (
     <form onSubmit={handleSubmit}>
       <div className="space-y-5">
+        {/* ... (todos os seus campos de input continuam aqui, sem alterações) ... */}
         <div>
           <label htmlFor="name" className="block text-sm font-medium text-brand-primary">Nome Completo</label>
           <input
@@ -98,10 +101,16 @@ export function EditPatientForm({ patient }: EditPatientFormProps) {
           />
         </div>
       </div>
-      <div className="mt-8">
+      
+      {/* AJUSTE: Rodapé do formulário agora tem os dois botões */}
+      <div className="mt-8 flex justify-between items-center">
+        {/* Botão de Excluir alinhado à esquerda */}
+        <DeletePatientButton patientId={patient.id} />
+
+        {/* Botão de Salvar alinhado à direita */}
         <button
           type="submit"
-          className="w-full bg-brand-accent text-white py-2.5 px-4 border border-transparent rounded-md shadow-sm font-medium hover:brightness-95 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-accent disabled:bg-gray-400"
+          className="bg-brand-accent text-white py-2.5 px-6 rounded-md shadow-sm font-medium hover:brightness-95 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-accent disabled:bg-gray-400"
           disabled={isSubmitting}
         >
           {isSubmitting ? 'Salvando...' : 'Salvar Alterações'}
