@@ -1,10 +1,10 @@
-// src/components/admin/UsersTable.tsx
-
+// src/app/(dashboard)/settings/users/_components/UsersTable.tsx
 'use client';
 
 import Link from 'next/link';
 import type { UserForTable } from '@/app/(dashboard)/settings/users/page';
-import { DeleteUserButton } from './DeleteUserButton'; // 1. Importamos o novo botão
+// import { DeleteUserButton } from './DeleteUserButton'; // 1. Botão de exclusão removido daqui
+import { Edit } from 'lucide-react'; // 2. Ícone de edição importado
 
 type UsersTableProps = {
   users: UserForTable[];
@@ -20,7 +20,8 @@ export function UsersTable({ users }: UsersTableProps) {
             <th className="py-3 px-4 text-left text-sm font-semibold text-brand-accent uppercase tracking-wider">Email</th>
             <th className="py-3 px-4 text-left text-sm font-semibold text-brand-accent uppercase tracking-wider">Função</th>
             <th className="py-3 px-4 text-left text-sm font-semibold text-brand-accent uppercase tracking-wider">Data de Criação</th>
-            <th className="py-3 px-4 text-left text-sm font-semibold text-brand-accent uppercase tracking-wider">Ações</th>
+            {/* 3. Cabeçalho de Ações alinhado à direita */}
+            <th className="py-3 px-4 text-right text-sm font-semibold text-brand-accent uppercase tracking-wider">Ações</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-200">
@@ -36,15 +37,17 @@ export function UsersTable({ users }: UsersTableProps) {
               <td className="py-4 px-4 whitespace-nowrap">
                 {new Date(user.createdAt).toLocaleDateString('pt-BR')}
               </td>
+              {/* 4. Célula de Ações com o novo link de Edição e alinhamento corrigido */}
               <td className="py-4 px-4 whitespace-nowrap text-sm font-medium">
-                <Link 
-                  href={`/settings/users/${user.id}/edit`}
-                  className="text-brand-accent hover:text-brand-primary hover:underline"
-                >
-                  Editar
-                </Link>
-                {/* 2. Adicionamos o botão de exclusão aqui */}
-                <DeleteUserButton userId={user.id} />
+                <div className="flex justify-end">
+                    <Link 
+                        href={`/settings/users/${user.id}/edit`}
+                        className="inline-flex items-center gap-2 text-brand-accent hover:text-brand-primary p-2 rounded-md hover:bg-gray-100 transition-colors"
+                    >
+                        <Edit size={16} />
+                        <span>Editar</span>
+                    </Link>
+                </div>
               </td>
             </tr>
           ))}

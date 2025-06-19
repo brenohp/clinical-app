@@ -4,9 +4,10 @@
 import { useState, FormEvent } from 'react';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
-import { updateUser } from '../../../actions'; // Importa nossa nova action
+import { useSession } from 'next-auth/react'; // 1. Importar o hook useSession
+import { updateUser } from '../../../actions';
+import { DeleteUserButton } from '../../../_components/DeleteUserButton'; // 2. Importar o nosso novo botão
 
-// Define um tipo para os dados do usuário que o formulário recebe
 type UserData = {
   id: string;
   name: string;
@@ -20,6 +21,7 @@ type EditUserFormProps = {
 
 export function EditUserForm({ user }: EditUserFormProps) {
   const router = useRouter();
+  const { data: session } = useSession(); // 3. Obter os dados da sessão do usuário logado
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -45,7 +47,7 @@ export function EditUserForm({ user }: EditUserFormProps) {
   return (
     <form onSubmit={handleSubmit}>
       <div className="space-y-5">
-        {/* Campo Nome */}
+        {/* ... (os campos do formulário continuam os mesmos) ... */}
         <div>
           <label htmlFor="name" className="block text-sm font-medium text-brand-primary">Nome</label>
           <input
@@ -55,11 +57,9 @@ export function EditUserForm({ user }: EditUserFormProps) {
             defaultValue={user.name}
             required
             disabled={isSubmitting}
-            className="mt-1 block w-full px-3 py-2 bg-white border border-brand-accent-light rounded-md disabled:opacity-50 ..."
+            className="mt-1 block w-full px-3 py-2 bg-white border border-brand-accent-light rounded-md disabled:opacity-50 focus:outline-none focus:ring-brand-accent focus:border-brand-accent"
           />
         </div>
-
-        {/* Campo Email */}
         <div>
           <label htmlFor="email" className="block text-sm font-medium text-brand-primary">Email</label>
           <input
@@ -69,11 +69,9 @@ export function EditUserForm({ user }: EditUserFormProps) {
             defaultValue={user.email}
             required
             disabled={isSubmitting}
-            className="mt-1 block w-full px-3 py-2 bg-white border border-brand-accent-light rounded-md disabled:opacity-50 ..."
+            className="mt-1 block w-full px-3 py-2 bg-white border border-brand-accent-light rounded-md disabled:opacity-50 focus:outline-none focus:ring-brand-accent focus:border-brand-accent"
           />
         </div>
-        
-        {/* Campo Função (Role) */}
         <div>
           <label htmlFor="role" className="block text-sm font-medium text-brand-primary">Função</label>
           <select
@@ -81,24 +79,30 @@ export function EditUserForm({ user }: EditUserFormProps) {
             name="role"
             defaultValue={user.role}
             disabled={isSubmitting}
-            className="mt-1 block w-full px-3 py-2 bg-white border border-brand-accent-light rounded-md disabled:opacity-50 ..."
+            className="mt-1 block w-full px-3 py-2 bg-white border border-brand-accent-light rounded-md disabled:opacity-50 focus:outline-none focus:ring-brand-accent focus:border-brand-accent"
           >
             <option value="USER">Usuário (Profissional)</option>
             <option value="ADMIN">Administrador</option>
           </select>
         </div>
-
-        {/* Aviso: A edição de senha geralmente é um fluxo separado e mais seguro */}
         <div className='text-xs text-gray-500 italic'>
             Para alterar a senha, um fluxo de &quot;Esqueci minha senha&quot; ou uma seção dedicada no perfil do usuário é recomendado por segurança.
         </div>
       </div>
 
-      <div className="mt-8">
+      {/* AJUSTE: Rodapé do formulário agora tem os dois botões */}
+      <div className="mt-8 flex justify-between items-center">
+        {/* 4. Botão de Excluir alinhado à esquerda */}
+        <DeleteUserButton 
+            userId={user.id} 
+            currentUserId={session?.user?.id || ''} 
+        />
+
+        {/* Botão de Salvar alinhado à direita */}
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full bg-brand-accent text-white py-2.5 px-4 rounded-md shadow-sm font-medium hover:brightness-95 disabled:bg-gray-400"
+          className="bg-brand-accent text-white py-2.5 px-6 rounded-md shadow-sm font-medium hover:brightness-95 disabled:bg-gray-400"
         >
           {isSubmitting ? 'Salvando...' : 'Salvar Alterações'}
         </button>

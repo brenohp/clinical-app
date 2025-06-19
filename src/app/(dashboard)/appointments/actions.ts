@@ -1,18 +1,17 @@
 // app/(dashboard)/appointments/actions.ts
 'use server';
 
-import prisma from '@/lib/prisma'; // Reutilizando nosso cliente Prisma
+import prisma from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 
 export async function createAppointment(formData: FormData) {
-  // 1. Extrair os dados do formulário
+  // ... (código existente sem alterações)
   const patientId = formData.get('patientId') as string;
   const doctorId = formData.get('doctorId') as string;
   const date = formData.get('date') as string;
   const time = formData.get('time') as string;
   const notes = formData.get('notes') as string;
 
-  // Validação simples
   if (!patientId || !doctorId || !date || !time) {
     return { success: false, message: 'Paciente, médico, data e hora são obrigatórios.' };
   }
@@ -31,19 +30,17 @@ export async function createAppointment(formData: FormData) {
     });
 
     revalidatePath('/appointments');
-    // Em vez de redirecionar, retorna uma mensagem de sucesso
     return { success: true, message: 'Agendamento criado com sucesso!' };
 
   } catch (error) {
     console.error('Erro ao criar agendamento:', error);
-    // Em vez de lançar um erro, retorna uma mensagem de falha
     return { success: false, message: 'Não foi possível criar o agendamento.' };
   }
 }
 
 
 export async function updateAppointment(appointmentId: string, formData: FormData) {
-  // 1. Extrair os dados do formulário
+  // ... (código existente sem alterações)
   const patientId = formData.get('patientId') as string;
   const doctorId = formData.get('doctorId') as string;
   const date = formData.get('date') as string;
@@ -74,22 +71,18 @@ export async function updateAppointment(appointmentId: string, formData: FormDat
     revalidatePath('/appointments');
     revalidatePath(`/appointments/${appointmentId}/edit`);
 
-    // Em vez de redirecionar, retorna uma mensagem de sucesso
     return { success: true, message: 'Agendamento atualizado com sucesso!' };
 
   } catch (error) {
     console.error('Erro ao atualizar agendamento:', error);
-    // Em vez de lançar um erro, retorna uma mensagem de falha
     return { success: false, message: 'Não foi possível atualizar o agendamento.' };
   }
 }
 
-export async function deleteAppointment(appointmentId: string) {
-  // Validação de segurança (será implementada com a sessão)
-  // if (!session?.user) { throw new Error('Acesso negado'); }
-
+// AJUSTE: A função de exclusão agora retorna um objeto de status para o toast
+export async function deleteAppointment(appointmentId: string): Promise<{ success: boolean; message: string; }> {
   if (!appointmentId) {
-    throw new Error('ID do agendamento não fornecido.');
+    return { success: false, message: 'ID do agendamento não fornecido.' };
   }
 
   try {
@@ -98,11 +91,12 @@ export async function deleteAppointment(appointmentId: string) {
         id: appointmentId,
       },
     });
+
+    revalidatePath('/appointments');
+    return { success: true, message: 'Agendamento excluído com sucesso.' };
+
   } catch (error) {
     console.error('Erro ao excluir agendamento:', error);
-    throw new Error('Não foi possível excluir o agendamento.');
+    return { success: false, message: 'Não foi possível excluir o agendamento.' };
   }
-
-  // Limpa o cache da página de listagem para que o agendamento removido desapareça
-  revalidatePath('/appointments');
 }

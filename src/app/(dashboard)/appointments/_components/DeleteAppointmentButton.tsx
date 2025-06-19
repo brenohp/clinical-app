@@ -1,27 +1,45 @@
 // app/(dashboard)/appointments/_components/DeleteAppointmentButton.tsx
 'use client';
 
+import { Trash2 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
 import { deleteAppointment } from '../actions';
 
-export function DeleteAppointmentButton({ appointmentId }: { appointmentId: string }) {
-  
-  const deleteAppointmentWithId = deleteAppointment.bind(null, appointmentId);
+type DeleteButtonProps = {
+  appointmentId: string;
+};
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    const confirmed = confirm('Você tem certeza que deseja excluir este agendamento? Esta ação não pode ser desfeita.');
-    if (!confirmed) {
-      event.preventDefault(); // Cancela o envio do formulário se o usuário não confirmar
+export function DeleteAppointmentButton({ appointmentId }: DeleteButtonProps) {
+  const router = useRouter();
+
+  const handleDelete = async () => {
+    const confirmed = window.confirm(
+      'Tem certeza que deseja excluir este agendamento? Esta ação não pode ser desfeita.'
+    );
+
+    if (confirmed) {
+      const result = await deleteAppointment(appointmentId);
+
+      if (result.success) {
+        toast.success(result.message);
+        router.push('/appointments');
+        router.refresh();
+      } else {
+        toast.error(result.message);
+      }
     }
   };
 
   return (
-    <form action={deleteAppointmentWithId} onSubmit={handleSubmit} className="inline">
-      <button
-        type="submit"
-        className="text-red-600 hover:text-red-800 hover:underline ml-4 font-medium"
-      >
-        Excluir
-      </button>
-    </form>
+    <button
+      type="button"
+      onClick={handleDelete}
+      className="flex items-center gap-2 text-red-600 hover:text-red-800 font-semibold"
+      aria-label="Excluir agendamento"
+    >
+      <Trash2 size={16} />
+      Excluir Agendamento
+    </button>
   );
 }

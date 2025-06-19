@@ -39,6 +39,7 @@ export function NewAppointmentForm({ patients, doctors }: NewAppointmentFormProp
   return (
     <form onSubmit={handleSubmit}>
       <div className="space-y-5">
+        {/* ... (o resto do formulário continua o mesmo) ... */}
         <div>
           <label htmlFor="patientId" className="block text-sm font-medium text-brand-primary">Paciente</label>
           <select 
@@ -86,8 +87,15 @@ export function NewAppointmentForm({ patients, doctors }: NewAppointmentFormProp
           <textarea id="notes" name="notes" rows={4} disabled={isLoading} className="mt-1 block w-full px-3 py-2 bg-white border border-brand-accent-light rounded-md text-brand-primary focus:outline-none focus:ring-brand-accent focus:border-brand-accent disabled:opacity-50"></textarea>
         </div>
       </div>
-      <div className="mt-8">
-        <button type="submit" disabled={isLoading} className="w-full bg-brand-accent text-white py-2.5 px-4 rounded-md shadow-sm font-medium hover:brightness-95 disabled:bg-gray-400">
+      
+      {/* AJUSTE: Div do botão alterada para alinhar à direita */}
+      <div className="mt-8 flex justify-end">
+        <button 
+          type="submit" 
+          disabled={isLoading} 
+          // Classes w-full removida e padding ajustado
+          className="bg-brand-accent text-white py-2.5 px-6 rounded-md shadow-sm font-medium hover:brightness-95 disabled:bg-gray-400"
+        >
           {isLoading ? 'Salvando...' : 'Salvar Agendamento'}
         </button>
       </div>

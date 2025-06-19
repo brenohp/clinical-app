@@ -1,36 +1,55 @@
 // app/(dashboard)/settings/users/_components/DeleteUserButton.tsx
 'use client';
 
-import { useTransition } from 'react';
+import { Trash2 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
-import { deleteUser } from '../actions'; // Importa a action do diretório pai
+import { deleteUser } from '../actions';
 
-export function DeleteUserButton({ userId }: { userId: string }) {
-  const [isPending, startTransition] = useTransition();
+type DeleteUserButtonProps = {
+  userId: string;
+  currentUserId: string; // Passaremos o ID do usuário logado para comparação
+};
 
-  const handleClick = () => {
-    if (window.confirm('Tem certeza que deseja excluir este usuário? Esta ação não pode ser desfeita.')) {
-      startTransition(async () => {
-        const result = await deleteUser(userId);
+export function DeleteUserButton({ userId, currentUserId }: DeleteUserButtonProps) {
+  const router = useRouter();
+  const isDeletingSelf = userId === currentUserId;
 
-        if (result.success) {
-          toast.success(result.message);
-        } else {
-          toast.error(result.message, {
-            duration: 6000,
-          });
-        }
-      });
+  const handleDelete = async () => {
+    // Dupla verificação no cliente para uma melhor experiência do usuário
+    if (isDeletingSelf) {
+      toast.error("Você não pode excluir sua própria conta.");
+      return;
+    }
+
+    const confirmed = window.confirm(
+      'Tem certeza que deseja excluir este usuário? Esta ação não pode ser desfeita.'
+    );
+
+    if (confirmed) {
+      const result = await deleteUser(userId);
+
+      if (result.success) {
+        toast.success(result.message);
+        router.push('/settings/users');
+        router.refresh();
+      } else {
+        toast.error(result.message, { duration: 5000 });
+      }
     }
   };
 
   return (
     <button
-      onClick={handleClick}
-      disabled={isPending}
-      className="ml-4 text-red-600 hover:text-red-800 hover:underline font-medium disabled:text-gray-400 disabled:no-underline disabled:cursor-not-allowed"
+      type="button"
+      onClick={handleDelete}
+      disabled={isDeletingSelf} // Desabilita o botão se for o próprio usuário
+      className="flex items-center gap-2 text-red-600 hover:text-red-800 font-semibold disabled:text-gray-400 disabled:cursor-not-allowed"
+      aria-label="Excluir usuário"
+      title={isDeletingSelf ? "Não é possível excluir a própria conta" : "Excluir usuário"}
     >
-      {isPending ? 'Excluindo...' : 'Excluir'}
+      <Trash2 size={16} />
+      Excluir Usuário
     </button>
   );
 }

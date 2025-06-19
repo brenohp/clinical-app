@@ -1,54 +1,31 @@
-// app/(dashboard)/configuracoes/usuarios/new/page.tsx
-
+// app/(dashboard)/settings/users/new/page.tsx
 'use client'; 
 
 import { useState, FormEvent } from 'react';
-import { useRouter } from 'next/navigation'; // Para redirecionar o usuário
-import toast from 'react-hot-toast';         // Para as notificações
+import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
 import { PageHeader } from '@/components/layout/PageHeader';
+import { createUser } from '../actions'; // Importa a nossa nova Server Action
 
 export default function NovoUsuarioPage() {
   const router = useRouter();
-
-  // Estados para o formulário
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [role, setRole] = useState('USER');
-  
-  // Novo estado para controlar o carregamento
   const [isLoading, setIsLoading] = useState(false);
 
-  // A nova função handleSubmit com a lógica de API
-  const handleSubmit = async (event: FormEvent) => {
+  // A função handleSubmit agora chama a Server Action
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsLoading(true);
     const toastId = toast.loading('Criando usuário...');
 
-    try {
-      const response = await fetch('/api/users', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ name, email, password, role }),
-      });
+    const formData = new FormData(event.currentTarget);
+    const result = await createUser(formData); // Usa a Server Action
 
-      const data = await response.json();
-
-      if (response.ok) {
-        toast.success('Usuário criado com sucesso!', { id: toastId });
-        router.push('/settings/users'); // Redireciona para a lista
-        router.refresh(); // Força a atualização dos dados na página de lista
-      } else {
-        // Exibe a mensagem de erro que vem da nossa API
-        toast.error(data.message || 'Erro ao criar usuário.', { id: toastId });
-      }
-    } catch (error) {
-      console.error('Falha na requisição:', error);
-      toast.error('Não foi possível se conectar ao servidor.', { id: toastId });
-    } finally {
-      // Garante que o estado de loading seja falso no final
+    if (result.success) {
+      toast.success(result.message, { id: toastId });
+      router.push('/settings/users');
+      router.refresh();
+    } else {
+      toast.error(result.message, { id: toastId });
       setIsLoading(false);
     }
   };
@@ -61,9 +38,9 @@ export default function NovoUsuarioPage() {
         backHref="/settings/users"
       />
 
-      <main className="bg-white p-6 md:p-8 rounded-lg shadow-md">
+      {/* AJUSTE: O formulário agora está dentro de uma div com largura máxima */}
+      <div className="mt-6 bg-white p-6 md:p-8 rounded-lg shadow-md max-w-xl">
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Os campos agora são desabilitados durante o carregamento */}
           <div>
             <label htmlFor="name" className="block text-sm font-medium text-brand-primary">
               Nome Completo
@@ -71,8 +48,7 @@ export default function NovoUsuarioPage() {
             <input
               type="text"
               id="name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              name="name" // Adicionado o atributo name
               required
               className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-accent focus:border-brand-accent disabled:opacity-50"
               disabled={isLoading}
@@ -85,8 +61,7 @@ export default function NovoUsuarioPage() {
             <input
               type="email"
               id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              name="email" // Adicionado o atributo name
               required
               className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-accent focus:border-brand-accent disabled:opacity-50"
               disabled={isLoading}
@@ -99,8 +74,7 @@ export default function NovoUsuarioPage() {
             <input
               type="password"
               id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              name="password" // Adicionado o atributo name
               required
               minLength={6}
               className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-accent focus:border-brand-accent disabled:opacity-50"
@@ -113,8 +87,8 @@ export default function NovoUsuarioPage() {
             </label>
             <select
               id="role"
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
+              name="role" // Adicionado o atributo name
+              defaultValue="USER" // Valor padrão
               className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-accent focus:border-brand-accent disabled:opacity-50"
               disabled={isLoading}
             >
@@ -123,18 +97,17 @@ export default function NovoUsuarioPage() {
             </select>
           </div>
           
-          <div className="flex justify-end">
+          <div className="flex justify-end pt-4">
             <button
               type="submit"
               className="bg-brand-accent text-white py-2 px-6 rounded-lg hover:bg-brand-primary transition-colors duration-200 font-semibold disabled:bg-gray-400 disabled:cursor-not-allowed"
               disabled={isLoading}
             >
-              {/* O texto do botão muda durante o carregamento */}
               {isLoading ? 'Salvando...' : 'Salvar Usuário'}
             </button>
           </div>
         </form>
-      </main>
+      </div>
     </div>
   );
 }
