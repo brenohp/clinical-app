@@ -10,7 +10,7 @@ generator client {
 
 datasource db {
   provider  = "postgresql"
-  url  	    = env("DATABASE_URL")
+  url       = env("DATABASE_URL")
   // uncomment next line if you use Prisma <5.10
   // directUrl = env("DATABASE_URL_UNPOOLED")
 }
@@ -23,7 +23,12 @@ model User {
   role      String   @default("USER") // Ex: "ADMIN", "DOCTOR", "ASSISTANT"
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  appointments Appointment[] 
+  
+  // Relação com Clínica
+  clinicId  String?
+  clinic    Clinic?  @relation(fields: [clinicId], references: [id])
+  
+  appointments Appointment[]
 }
 
 model Patient {
@@ -36,6 +41,7 @@ model Patient {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  
   appointments Appointment[]
 }
 
@@ -51,8 +57,28 @@ model Appointment {
 
   // Relação com Usuário (Médico): Uma consulta é de um médico.
   doctorId String
-  doctor   User   @relation(fields: [doctorId], references: [id])
+  doctor   User    @relation(fields: [doctorId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Clinic {
+  id    String   @id @default(cuid())
+  name  String   // Nome fantasia da clínica
+  users User[]   // Usuários associados a esta clínica
+  units ClinicUnit[] // A clínica pode ter várias unidades
+}
+
+model ClinicUnit {
+  id        String   @id @default(cuid())
+  name      String   // Ex: "Unidade Centro", "Consultório Principal"
+  address   String
+  city      String
+  state     String
+  zipCode   String
+  phone     String?
+  
+  clinicId  String
+  clinic    Clinic   @relation(fields: [clinicId], references: [id])
 }

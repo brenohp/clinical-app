@@ -72,18 +72,26 @@ export default async function SettingsPage() {
               </div>
             </Link>
 
-            {/* Card 2: Dados da Clínica (Placeholder) */}
-            <div className="group block p-6 bg-white rounded-lg shadow-md opacity-60 cursor-not-allowed">
+            {/* Card 2: Dados da Clínica */}
+            <Link
+              href="/settings/clinic"
+              className="group block p-6 bg-white rounded-lg shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+            >
               <div className="flex items-start justify-between">
-                <span className="bg-gray-200 p-3 rounded-full">
-                  <Building className="text-gray-500" size={24} />
+                <span className="bg-brand-accent-light p-3 rounded-full">
+                  <Building className="text-brand-accent" size={24} />
+                </span>
+                <span className="text-xs font-semibold text-gray-400 group-hover:text-brand-accent transition-colors">
+                  IR &rarr;
                 </span>
               </div>
               <div className="mt-4">
-                <h3 className="text-lg font-bold text-gray-500">Dados da Clínica</h3>
-                <p className="text-sm text-gray-600 mt-1">Edite informações como nome e endereço.</p>
+                <h3 className="text-lg font-bold text-brand-primary">Dados da Clínica</h3>
+                <p className="text-sm text-gray-600 mt-1">
+                  Gerencie unidades, agendas e serviços.
+                </p>
               </div>
-            </div>
+            </Link>
             
             {/* Card 3: Faturamento (Placeholder) */}
             <div className="group block p-6 bg-white rounded-lg shadow-md opacity-60 cursor-not-allowed">
