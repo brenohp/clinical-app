@@ -8,9 +8,11 @@ import { deleteAppointment } from '../actions';
 
 type DeleteButtonProps = {
   appointmentId: string;
+  // AJUSTE: Adicionamos um callback opcional
+  onSuccess?: () => void;
 };
 
-export function DeleteAppointmentButton({ appointmentId }: DeleteButtonProps) {
+export function DeleteAppointmentButton({ appointmentId, onSuccess }: DeleteButtonProps) {
   const router = useRouter();
 
   const handleDelete = async () => {
@@ -23,8 +25,11 @@ export function DeleteAppointmentButton({ appointmentId }: DeleteButtonProps) {
 
       if (result.success) {
         toast.success(result.message);
-        router.push('/appointments');
-        router.refresh();
+        router.refresh(); // Apenas atualiza os dados do servidor
+        // AJUSTE: Se a função onSuccess existir, chame-a
+        if (onSuccess) {
+          onSuccess();
+        }
       } else {
         toast.error(result.message);
       }

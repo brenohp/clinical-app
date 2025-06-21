@@ -6,16 +6,17 @@ import type { Appointment, Patient, User } from '@prisma/client';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { updateAppointment } from '../../../actions';
-// NOVO: Importando o botão de exclusão que criamos
 import { DeleteAppointmentButton } from '../../../_components/DeleteAppointmentButton';
 
 type EditAppointmentFormProps = {
   appointment: Appointment;
   patients: Patient[];
   doctors: User[];
+  // AJUSTE: O formulário agora recebe uma função para executar em caso de sucesso
+  onSuccess: () => void;
 };
 
-export function EditAppointmentForm({ appointment, patients, doctors }: EditAppointmentFormProps) {
+export function EditAppointmentForm({ appointment, patients, doctors, onSuccess }: EditAppointmentFormProps) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -32,10 +33,8 @@ export function EditAppointmentForm({ appointment, patients, doctors }: EditAppo
 
     if (result.success) {
       toast.success(result.message, { id: toastId });
-      setTimeout(() => {
-        router.push('/appointments');
-        router.refresh();
-      }, 1000);
+      router.refresh(); // Apenas atualiza os dados do servidor
+      onSuccess(); // AJUSTE: Chama a função de sucesso para fechar o modal
     } else {
       toast.error(result.message, { id: toastId });
       setIsSubmitting(false);
@@ -54,7 +53,6 @@ export function EditAppointmentForm({ appointment, patients, doctors }: EditAppo
             ))}
           </select>
         </div>
-
         <div>
           <label htmlFor="doctorId" className="block text-sm font-medium text-brand-primary">Médico/Profissional</label>
           <select id="doctorId" name="doctorId" defaultValue={appointment.doctorId} required disabled={isSubmitting} className="mt-1 block w-full px-3 py-2 bg-white border border-brand-accent-light rounded-md disabled:opacity-50 focus:outline-none focus:ring-brand-accent focus:border-brand-accent">
@@ -63,7 +61,6 @@ export function EditAppointmentForm({ appointment, patients, doctors }: EditAppo
             ))}
           </select>
         </div>
-
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label htmlFor="date" className="block text-sm font-medium text-brand-primary">Data</label>
@@ -74,7 +71,6 @@ export function EditAppointmentForm({ appointment, patients, doctors }: EditAppo
             <input type="time" id="time" name="time" defaultValue={appointmentTimeForInput} required disabled={isSubmitting} className="mt-1 block w-full px-3 py-2 bg-white border border-brand-accent-light rounded-md disabled:opacity-50 focus:outline-none focus:ring-brand-accent focus:border-brand-accent"/>
           </div>
         </div>
-
         <div>
           <label htmlFor="status" className="block text-sm font-medium text-brand-primary">Status</label>
           <select id="status" name="status" defaultValue={appointment.status} required disabled={isSubmitting} className="mt-1 block w-full px-3 py-2 bg-white border border-brand-accent-light rounded-md disabled:opacity-50 focus:outline-none focus:ring-brand-accent focus:border-brand-accent">
@@ -84,19 +80,16 @@ export function EditAppointmentForm({ appointment, patients, doctors }: EditAppo
             <option value="CANCELADA">Cancelada</option>
           </select>
         </div>
-
         <div>
           <label htmlFor="notes" className="block text-sm font-medium text-brand-primary">Anotações (Opcional)</label>
           <textarea id="notes" name="notes" rows={4} defaultValue={appointment.notes ?? ''} disabled={isSubmitting} className="mt-1 block w-full px-3 py-2 bg-white border border-brand-accent-light rounded-md disabled:opacity-50 focus:outline-none focus:ring-brand-accent focus:border-brand-accent"></textarea>
         </div>
       </div>
       
-      {/* AJUSTE: Rodapé do formulário agora tem os dois botões */}
       <div className="mt-8 flex justify-between items-center">
-        {/* Botão de Excluir alinhado à esquerda */}
-        <DeleteAppointmentButton appointmentId={appointment.id} />
+        {/* AJUSTE: Passando a função de sucesso para o botão */}
+        <DeleteAppointmentButton appointmentId={appointment.id} onSuccess={onSuccess} />
 
-        {/* Botão de Salvar alinhado à direita */}
         <button 
           type="submit" 
           disabled={isSubmitting} 

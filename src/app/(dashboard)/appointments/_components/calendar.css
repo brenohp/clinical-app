@@ -1,0 +1,83 @@
+/* app/(dashboard)/appointments/_components/calendar.css */
+
+/* Remove a borda azul padrão do foco */
+.rbc-calendar:focus {
+  outline: none;
+}
+
+/* --- Barra de Ferramentas e Botões --- */
+.rbc-toolbar {
+  margin-bottom: 1.5rem;
+  font-family: inherit;
+}
+
+.rbc-btn-group button {
+  background-color: transparent;
+  color: #12577B; /* brand-accent */
+  border: 1px solid #A9CFE5; /* brand-accent-light */
+  padding: 0.4rem 0.8rem;
+  transition: all 0.2s ease-in-out;
+}
+
+.rbc-btn-group button:hover,
+.rbc-btn-group button:focus {
+  background-color: #F7F7F7; /* brand-background */
+  border-color: #12577B; /* brand-accent */
+  box-shadow: none;
+}
+
+/* Estilo do botão ativo (Hoje, Mês, Semana, Dia) */
+.rbc-btn-group button.rbc-active,
+.rbc-btn-group button.rbc-active:hover {
+  background-color: #12577B; /* brand-accent */
+  color: white;
+  border-color: #12577B; /* brand-accent */
+  box-shadow: none;
+}
+
+/* Título do mês/semana atual */
+.rbc-toolbar-label {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #021B33; /* brand-primary */
+}
+
+/* --- Cabeçalho (Dias da Semana) --- */
+.rbc-header {
+  border-bottom: 1px solid #A9CFE5; /* brand-accent-light */
+  padding: 0.75rem 0;
+  color: #12577B; /* brand-accent */
+  font-weight: 600;
+}
+
+/* --- Célula do Dia de Hoje --- */
+.rbc-today {
+  background-color: #F7F7F7; /* brand-background */
+}
+
+/* --- Eventos (Agendamentos) --- */
+.rbc-event {
+  background-color: #12577B; /* brand-accent */
+  border: 1px solid #021B33; /* brand-primary */
+  color: white;
+  border-radius: 4px;
+  padding: 0.2rem 0.5rem;
+}
+
+/* --- Seleção de Horário --- */
+.rbc-day-slot .rbc-selected {
+  background-color: #A9CFE5; /* brand-accent-light */
+  border-color: #12577B; /* brand-accent */
+}
+
+/* Efeito de hover nos dias do calendário */
+.rbc-month-row .rbc-day-bg:hover {
+  background-color: #A9CFE5; /* Cor brand-accent-light */
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+/* Efeito de clique (quando um slot é selecionado) */
+.rbc-day-bg.rbc-selected {
+    background-color: #12577B; /* Cor brand-accent */
+}
