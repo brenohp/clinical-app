@@ -5,14 +5,15 @@ import { useState, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { updateServiceType } from '../../../_actions/service-actions';
+// NOVO: Importando o botão de exclusão
+import { DeleteServiceButton } from '../../../_components/DeleteServiceButton'; 
 
-// AJUSTE: Criamos um tipo local para o objeto "simples"
 type PlainService = {
   id: string;
   name: string;
   description: string | null;
   durationMinutes: number;
-  price: number | null; // <-- O tipo agora é number | null
+  price: number | null;
   isActive: boolean;
 };
 
@@ -45,7 +46,7 @@ export function EditServiceForm({ service }: EditServiceFormProps) {
   return (
     <div className="mt-6 bg-white p-6 md:p-8 rounded-lg shadow-md max-w-2xl">
       <form onSubmit={handleSubmit} className="space-y-6">
-        {/* ... (campos de nome, descrição, duração e status não mudam) ... */}
+        {/* ... (os campos do formulário continuam os mesmos) ... */}
         <div>
           <label htmlFor="name" className="block text-sm font-medium text-brand-primary">Nome do Serviço</label>
           <input
@@ -89,7 +90,6 @@ export function EditServiceForm({ service }: EditServiceFormProps) {
               id="price"
               name="price"
               placeholder="Ex: 250,00"
-              // AJUSTE: Agora usamos o 'price' como número
               defaultValue={service.price ? String(service.price).replace('.', ',') : ''}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-accent focus:border-brand-accent disabled:opacity-50"
               disabled={isLoading}
@@ -110,7 +110,11 @@ export function EditServiceForm({ service }: EditServiceFormProps) {
           </label>
         </div>
 
-        <div className="flex justify-end pt-4">
+        {/* AJUSTE: Rodapé do formulário agora tem os dois botões */}
+        <div className="flex justify-between items-center pt-4">
+          <div>
+            <DeleteServiceButton serviceId={service.id} />
+          </div>
           <button
             type="submit"
             className="bg-brand-accent text-white py-2.5 px-6 rounded-md shadow-sm font-medium hover:brightness-95 disabled:bg-gray-400"

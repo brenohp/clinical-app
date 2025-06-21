@@ -45,9 +45,6 @@ export async function createServiceType(formData: FormData): Promise<{ success: 
   }
 }
 
-
-// --- NOVA FUNÇÃO ADICIONADA ABAIXO ---
-
 export async function updateServiceType(serviceId: string, formData: FormData): Promise<{ success: boolean; message: string; }> {
   try {
     const session = await getServerSession(authOptions);
@@ -55,13 +52,11 @@ export async function updateServiceType(serviceId: string, formData: FormData): 
       return { success: false, message: 'Não autorizado.' };
     }
 
-    // Validação de segurança: garante que o serviço pertence à clínica do usuário
     const service = await prisma.serviceType.findUnique({ where: { id: serviceId } });
     if (!service || service.clinicId !== session.user.clinicId) {
       return { success: false, message: 'Serviço não encontrado ou não autorizado.' };
     }
 
-    // Extrai e converte os dados do formulário
     const name = formData.get('name') as string;
     const description = formData.get('description') as string;
     const durationMinutes = parseInt(formData.get('durationMinutes') as string);
@@ -93,4 +88,38 @@ export async function updateServiceType(serviceId: string, formData: FormData): 
     console.error("Erro ao atualizar serviço:", error);
     return { success: false, message: 'Falha ao atualizar o serviço.' };
   }
+}
+
+// ESTA FUNÇÃO PRECISA ESTAR NO ARQUIVO
+export async function deleteServiceType(serviceId: string): Promise<{ success: boolean; message:string; } > {
+    try {
+        const session = await getServerSession(authOptions);
+        if (!session?.user.clinicId) {
+            return { success: false, message: 'Não autorizado.' };
+        }
+
+        const service = await prisma.serviceType.findUnique({ where: { id: serviceId } });
+        if (!service || service.clinicId !== session.user.clinicId) {
+            return { success: false, message: 'Serviço não encontrado ou não autorizado.' };
+        }
+
+        const appointmentCount = await prisma.appointment.count({
+            where: { serviceTypeId: serviceId },
+        });
+
+        if (appointmentCount > 0) {
+            return { success: false, message: `Este serviço está vinculado a ${appointmentCount} agendamento(s) e não pode ser excluído.` };
+        }
+
+        await prisma.serviceType.delete({
+            where: { id: serviceId },
+        });
+
+        revalidatePath('/settings/services');
+        return { success: true, message: 'Serviço excluído com sucesso!' };
+
+    } catch (error) {
+        console.error("Erro ao excluir serviço:", error);
+        return { success: false, message: 'Falha ao excluir o serviço.' };
+    }
 }
